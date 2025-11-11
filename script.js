@@ -15,33 +15,30 @@ folders.forEach((folder, index) => {
   folder.addEventListener("mouseenter", () => {
     if (isMobile) return;
 
-    // Dim siblings
     folders.forEach((siblingFolder) => {
       if (siblingFolder !== folder) siblingFolder.classList.add("disabled");
     });
 
-    // Quick lift
-    gsap.to(folderWrappers[index], {
-      y: 0,
-      duration: 0.15,
-      ease: "back.out(1.7)",
-    });
+    const tl = gsap.timeline({ defaults: { ease: "back.out(1.7)" } });
 
-    // Quick card fan
-    previewImages.forEach((img, imgIndex) => {
-      const minRot = -18;
-      const maxRot = 18;
-      const step = (maxRot - minRot) / (previewImages.length - 1);
-      const rotation = minRot + imgIndex * step + gsap.utils.random(-2, 2);
+    // Lift entire folder slightly (relative, so row position unaffected)
+    tl.to(folder, {
+      yPercent: -10,
+      duration: 0.12,
+    }, 0);
 
-      gsap.to(img, {
-        y: "-100%",
-        rotation,
-        duration: 0.15,
-        ease: "back.out(1.7)",
-        delay: imgIndex * 0.015, // much shorter delay
-      });
-    });
+    // Fan out cards at the same time
+    tl.to(previewImages, {
+      yPercent: -135,
+      stagger: 0.015,
+      duration: 0.12,
+      rotation: (i) => {
+        const minRot = -15;
+        const maxRot = 15;
+        const step = (maxRot - minRot) / (previewImages.length - 1);
+        return minRot + i * step + gsap.utils.random(-1.5, 1.5);
+      },
+    }, 0);
   });
 
   folder.addEventListener("mouseleave", () => {
@@ -51,23 +48,21 @@ folders.forEach((folder, index) => {
       siblingFolder.classList.remove("disabled");
     });
 
-    gsap.to(folderWrappers[index], {
-      y: 20,
-      duration: 0.15,
-        ease: "back.out(1.7)",
-    });
+    const tl = gsap.timeline({ defaults: { ease: "back.in(1.7)" } });
 
-    // Snap back fast
-    previewImages.forEach((img, imgIndex) => {
-      gsap.to(img, {
-        y: "0%",
-        rotation: 0,
-        duration: 0.15,
-        ease: "back.out(1.7)",
-        delay: imgIndex * 0.015,
-      });
-    });
+    tl.to(previewImages, {
+      yPercent: 0,
+      rotation: 0,
+      stagger: 0.01,
+      duration: 0.1,
+    }, 0);
+
+    tl.to(folder, {
+      yPercent: 0,
+      duration: 0.1,
+    }, 0);
   });
-
 });
+
+
 

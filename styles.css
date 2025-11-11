@@ -125,9 +125,9 @@ nav {
 /* Each hero card */
 .folder-preview-img {
   position: absolute;
-  top: 60%;
-  width: 8rem;
-  height: 12rem;
+  top: 65%;
+  width: 12rem;
+  height: 16rem;
   transform: translateY(-50%);
   transition: transform 0.3s ease;
 }
